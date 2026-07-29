@@ -14,3 +14,23 @@ except ImportError:
     os.system("cls" if os.name == "nt" else "clear")
     def pausar():
     input("\nPresione ENTER para continuar...")
+    def titulo():
+
+    limpiar()
+
+    print("=" * 50)
+    print("📚      FICCIÓN X - GESTOR DE LIBROS")
+    print("=" * 50)
+    def menu():
+
+    titulo()
+
+    print("1. Agregar libro")
+    print("2. Mostrar libros")
+    print("3. Buscar libro")
+    print("4. Editar libro")
+    print("5. Eliminar libro")
+    print("6. Estadísticas")
+    print("7. Salir")
+
+    return input("\nSeleccione una opción: ")
