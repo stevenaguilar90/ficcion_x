@@ -59,3 +59,85 @@ def mostrar_menu():
     print("6. Cargar datos")
     print("7. Salir")
     print()
+    def main():
+    biblioteca = Biblioteca()
+    json_manager = JSONManager("datos/libros.json")
+
+    try:
+        libros = json_manager.cargar()
+        for datos in libros:
+            libro = Libro(
+                datos["titulo"],
+                datos["autor"],
+                datos["anio"],
+                datos["isbn"]
+            )
+            biblioteca.agregar_libro(libro)
+    except:
+        pass
+
+    while True:
+        mostrar_menu()
+        opcion = input("Seleccione una opción: ")
+
+        if opcion == "1":
+            print("\n--- Agregar libro ---")
+            titulo = input("Título: ")
+            autor = input("Autor: ")
+            anio = input("Año: ")
+            isbn = input("ISBN: ")
+
+            libro = Libro(titulo, autor, anio, isbn)
+            biblioteca.agregar_libro(libro)
+
+            print(Fore.GREEN + "\nLibro agregado correctamente.")
+            pausar()
+
+        elif opcion == "2":
+            print("\n--- Lista de libros ---")
+            biblioteca.mostrar_libros()
+            pausar()
+
+        elif opcion == "3":
+            titulo = input("\nIngrese el título a buscar: ")
+            biblioteca.buscar_libro(titulo)
+            pausar()
+
+        elif opcion == "4":
+            titulo = input("\nIngrese el título a eliminar: ")
+            biblioteca.eliminar_libro(titulo)
+            pausar()
+
+        elif opcion == "5":
+            json_manager.guardar(biblioteca.libros)
+            print(Fore.GREEN + "\nDatos guardados correctamente.")
+            pausar()
+
+        elif opcion == "6":
+            biblioteca.libros = []
+            libros = json_manager.cargar()
+
+            for datos in libros:
+                libro = Libro(
+                    datos["titulo"],
+                    datos["autor"],
+                    datos["anio"],
+                    datos["isbn"]
+                )
+                biblioteca.agregar_libro(libro)
+
+            print(Fore.GREEN + "\nDatos cargados correctamente.")
+            pausar()
+
+        elif opcion == "7":
+            json_manager.guardar(biblioteca.libros)
+            print(Fore.CYAN + "\n¡Hasta luego!")
+            break
+
+        else:
+            print(Fore.RED + "\nOpción inválida.")
+            pausar()
+
+
+if __name__ == "__main__":
+    main()
