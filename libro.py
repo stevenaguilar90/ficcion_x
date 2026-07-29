@@ -13,7 +13,7 @@ class Libro:
         self.genero = genero.strip()
         self.paginas = paginas
         self.estado = estado
-        self.fecha_registro = datetime.now().strftime("%d/%m/%Y/ %H:%M:%S")
+        self.fecha_registro = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     
     def mostrar(self):
         return(
