@@ -12,3 +12,5 @@ except ImportError:
         RESET_ALL = ""
     def limpiar():
     os.system("cls" if os.name == "nt" else "clear")
+    def pausar():
+    input("\nPresione ENTER para continuar...")
