@@ -1,7 +1,9 @@
+import os 
 from sistema.biblioteca import Biblioteca
 from archivos.json_manager import JSONManager
 from modelos.libro import Libro
-import os 
+
+# Manejo seguro de colorama por si no está instalado
 try:
     from colorama import init, Fore, Style
     init(autoreset=True)
@@ -10,30 +12,8 @@ except ImportError:
         RED = GREEN = YELLOW = CYAN = ""
     class Style:
         RESET_ALL = ""
-    def limpiar():
-    os.system("cls" if os.name == "nt" else "clear")
-    def pausar():
-    input("\nPresione ENTER para continuar...")
-    def titulo():
 
-    limpiar()
 
-    print("=" * 50)
-    print("📚      FICCIÓN X - GESTOR DE LIBROS")
-    print("=" * 50)
-    def menu():
-
-    titulo()
-
-    print("1. Agregar libro")
-    print("2. Mostrar libros")
-    print("3. Buscar libro")
-    print("4. Editar libro")
-    print("5. Eliminar libro")
-    print("6. Estadísticas")
-    print("7. Salir")
-
-    return input("\nSeleccione una opción: ")
 def limpiar_pantalla():
     os.system("cls" if os.name == "nt" else "clear")
 
@@ -45,7 +25,7 @@ def pausar():
 def mostrar_titulo():
     limpiar_pantalla()
     print(Fore.CYAN + "=" * 50)
-    print("          SISTEMA DE BIBLIOTECA")
+    print(" 📚          SISTEMA DE BIBLIOTECA")
     print("=" * 50 + Style.RESET_ALL)
 
 
@@ -59,10 +39,13 @@ def mostrar_menu():
     print("6. Cargar datos")
     print("7. Salir")
     print()
-    def main():
+
+
+def main():
     biblioteca = Biblioteca()
     json_manager = JSONManager("datos/libros.json")
 
+    # Cargar datos iniciales
     try:
         libros = json_manager.cargar()
         for datos in libros:
@@ -73,7 +56,7 @@ def mostrar_menu():
                 datos["isbn"]
             )
             biblioteca.agregar_libro(libro)
-    except:
+    except Exception:
         pass
 
     while True:
