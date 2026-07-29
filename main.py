@@ -10,3 +10,5 @@ except ImportError:
         RED = GREEN = YELLOW = CYAN = ""
     class Style:
         RESET_ALL = ""
+    def limpiar():
+    os.system("cls" if os.name == "nt" else "clear")
