@@ -5,7 +5,10 @@ from archivos.json_manager import JSONManager
 from modelos.libro import Libro
 
 
-# Manejo de colores
+# ==========================================
+# MANEJO DE COLORES
+# ==========================================
+
 try:
     from colorama import init, Fore, Style
 
@@ -22,6 +25,10 @@ except ImportError:
     class Style:
         RESET_ALL = ""
 
+
+# ==========================================
+# FUNCIONES DE PANTALLA
+# ==========================================
 
 def limpiar_pantalla():
     os.system(
@@ -56,43 +63,85 @@ def mostrar_menu():
     print("6. Cargar datos")
     print("7. Salir")
     print()
+
+
+# ==========================================
+# VALIDAR NÚMEROS
+# ==========================================
+
 def pedir_numero(mensaje, minimo=1, maximo=None):
+
     while True:
+
         valor = input(mensaje).strip()
 
+        # Comprobar que solamente sean números
         if not valor.isdigit():
-            print(Fore.RED + "❌ Debe ingresar solamente números.")
+
+            print(
+                Fore.RED
+                + "❌ Debe ingresar solamente números."
+            )
+
             continue
 
         numero = int(valor)
 
+        # Comprobar mínimo
         if numero < minimo:
-            print(Fore.RED + f"❌ El valor debe ser como mínimo {minimo}.")
+
+            print(
+                Fore.RED
+                + f"❌ El valor debe ser como mínimo {minimo}."
+            )
+
             continue
 
+        # Comprobar máximo
         if maximo is not None and numero > maximo:
-            print(Fore.RED + f"❌ El valor no puede ser mayor que {maximo}.")
+
+            print(
+                Fore.RED
+                + f"❌ El valor no puede ser mayor que {maximo}."
+            )
+
             continue
 
         return numero
 
 
+# ==========================================
+# VALIDAR TEXTO
+# ==========================================
+
 def pedir_texto(mensaje):
+
     while True:
+
         valor = input(mensaje).strip()
 
         if not valor:
-            print(Fore.RED + "❌ Este campo no puede quedar vacío.")
+
+            print(
+                Fore.RED
+                + "❌ Este campo no puede quedar vacío."
+            )
+
             continue
 
         return valor
+
+
+# ==========================================
+# PROGRAMA PRINCIPAL
+# ==========================================
 
 def main():
 
     biblioteca = Biblioteca()
     json_manager = JSONManager()
 
-    # Cargar libros existentes al iniciar
+    # Cargar libros existentes
     biblioteca.libros = json_manager.cargar()
 
     while True:
@@ -103,47 +152,61 @@ def main():
             "Seleccione una opción: "
         ).strip()
 
-        # =================================
-        # AGREGAR LIBRO
-        # =================================
+        # ==================================
+        # 1. AGREGAR LIBRO
+        # ==================================
 
         if opcion == "1":
 
             print("\n--- AGREGAR LIBRO ---")
 
-            id_libro = input(
-                "ID del libro: "
-            ).strip()
+            # ID solamente números
+            id_libro = pedir_numero(
+                "ID del libro: ",
+                minimo=1
+            )
 
-            titulo = input(
-                "Título: "
-            ).strip()
+            # Comprobar ID repetido
+            if biblioteca.buscar_por_id(id_libro) is not None:
 
-            autor = input(
-                "Autor: "
-            ).strip()
-
-            anio = input(
-                "Año: "
-            ).strip()
-
-            genero = input(
-                "Género: "
-            ).strip()
-
-            paginas = input(
-                "Cantidad de páginas: "
-            ).strip()
-
-            # Verificar ID repetido
-            if biblioteca.buscar_por_id(id_libro):
                 print(
                     Fore.RED
-                    + "\nEse ID ya existe."
+                    + "\n❌ Ya existe un libro con ese ID."
                 )
+
                 pausar()
                 continue
 
+            # Título obligatorio
+            titulo = pedir_texto(
+                "Título: "
+            )
+
+            # Autor obligatorio
+            autor = pedir_texto(
+                "Autor: "
+            )
+
+            # Año entre 1 y 2026
+            anio = pedir_numero(
+                "Año: ",
+                minimo=1,
+                maximo=2026
+            )
+
+            # Género obligatorio
+            genero = pedir_texto(
+                "Género: "
+            )
+
+            # Páginas entre 1 y 1000
+            paginas = pedir_numero(
+                "Cantidad de páginas: ",
+                minimo=1,
+                maximo=1000
+            )
+
+            # Crear libro
             libro = Libro(
                 id_libro,
                 titulo,
@@ -153,18 +216,19 @@ def main():
                 paginas
             )
 
+            # Agregar a la biblioteca
             biblioteca.agregar_libro(libro)
 
             print(
                 Fore.GREEN
-                + "\nLibro agregado correctamente."
+                + "\n✅ Libro agregado correctamente."
             )
 
             pausar()
 
-        # =================================
-        # MOSTRAR LIBROS
-        # =================================
+        # ==================================
+        # 2. MOSTRAR LIBROS
+        # ==================================
 
         elif opcion == "2":
 
@@ -174,49 +238,49 @@ def main():
 
             pausar()
 
-        # =================================
-        # BUSCAR LIBRO
-        # =================================
+        # ==================================
+        # 3. BUSCAR LIBRO
+        # ==================================
 
         elif opcion == "3":
 
             print("\n--- BUSCAR LIBRO ---")
 
-            titulo = input(
+            titulo = pedir_texto(
                 "Ingrese el título a buscar: "
-            ).strip()
+            )
 
             biblioteca.buscar_libro(titulo)
 
             pausar()
 
-        # =================================
-        # ELIMINAR LIBRO
-        # =================================
+        # ==================================
+        # 4. ELIMINAR LIBRO
+        # ==================================
 
         elif opcion == "4":
 
             print("\n--- ELIMINAR LIBRO ---")
 
-            titulo = input(
+            titulo = pedir_texto(
                 "Ingrese el título a eliminar: "
-            ).strip()
+            )
 
             eliminado = biblioteca.eliminar_libro(
                 titulo
             )
 
             if eliminado:
-                # Guardar automáticamente
+
                 json_manager.guardar(
                     biblioteca.libros
                 )
 
             pausar()
 
-        # =================================
-        # GUARDAR DATOS
-        # =================================
+        # ==================================
+        # 5. GUARDAR DATOS
+        # ==================================
 
         elif opcion == "5":
 
@@ -228,21 +292,21 @@ def main():
 
                 print(
                     Fore.GREEN
-                    + "\nDatos guardados correctamente."
+                    + "\n✅ Datos guardados correctamente."
                 )
 
             except Exception as error:
 
                 print(
                     Fore.RED
-                    + f"\nError al guardar: {error}"
+                    + f"\n❌ Error al guardar: {error}"
                 )
 
             pausar()
 
-        # =================================
-        # CARGAR DATOS
-        # =================================
+        # ==================================
+        # 6. CARGAR DATOS
+        # ==================================
 
         elif opcion == "6":
 
@@ -254,7 +318,7 @@ def main():
 
                 print(
                     Fore.GREEN
-                    + "\nDatos cargados correctamente."
+                    + "\n✅ Datos cargados correctamente."
                 )
 
                 print(
@@ -266,26 +330,35 @@ def main():
 
                 print(
                     Fore.RED
-                    + f"\nError al cargar: {error}"
+                    + f"\n❌ Error al cargar: {error}"
                 )
 
             pausar()
 
-        # =================================
-        # SALIR
-        # =================================
+        # ==================================
+        # 7. SALIR
+        # ==================================
 
         elif opcion == "7":
 
-            # Guardar automáticamente antes de salir
-            json_manager.guardar(
-                biblioteca.libros
-            )
+            try:
 
-            print(
-                Fore.CYAN
-                + "\nDatos guardados."
-            )
+                # Guardar automáticamente
+                json_manager.guardar(
+                    biblioteca.libros
+                )
+
+                print(
+                    Fore.CYAN
+                    + "\n✅ Datos guardados."
+                )
+
+            except Exception as error:
+
+                print(
+                    Fore.RED
+                    + f"\n❌ Error al guardar: {error}"
+                )
 
             print(
                 Fore.CYAN
@@ -294,19 +367,23 @@ def main():
 
             break
 
-        # =================================
-        # OPCIÓN INCORRECTA
-        # =================================
+        # ==================================
+        # OPCIÓN INVÁLIDA
+        # ==================================
 
         else:
 
             print(
                 Fore.RED
-                + "\nOpción inválida."
+                + "\n❌ Opción inválida."
             )
 
             pausar()
 
+
+# ==========================================
+# INICIAR PROGRAMA
+# ==========================================
 
 if __name__ == "__main__":
     main()
